@@ -1,0 +1,1 @@
+mvn archetype:generate -DgroupId=com.core.java.practice -DartifactId=CoreJavaPractice -Dversion=1.0 -DarchetypeArtifactId-maven-archetype-quickstart -DinteractiveMode=false
