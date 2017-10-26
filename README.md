@@ -2,3 +2,4 @@
 1. core.java.loops.ForLoop
 2. core.java.loops.WhileLoop
 3. core.java.loops.DoWhileLoop
+4. core.java.conditions.Conditions
