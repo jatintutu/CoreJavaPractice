@@ -115,6 +115,22 @@ public class StringPractice {
 	@Test
 	public void printAllSubStrings() {
 		String s1 = "Helloworld";
+		int length = 3;
 
+	}
+
+	@Test
+	public void shiftString() {
+		String s1 = "abcd";
+
+		String rotation = "left";
+		int rotationSize = 2;
+
+		// TODO
+
+		rotation = "right";
+		rotationSize = 3;
+
+		// TODO
 	}
 }

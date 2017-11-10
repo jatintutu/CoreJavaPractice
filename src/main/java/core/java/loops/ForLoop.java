@@ -53,6 +53,7 @@ public class ForLoop {
 		// for each loop
 		for (Integer num : numbers) {
 			System.out.println("numbers1:" + num);
+
 		}
 
 	}
