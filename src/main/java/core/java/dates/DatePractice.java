@@ -1,5 +1,6 @@
 package core.java.dates;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,12 +13,38 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.junit.Test;
 
+/**
+ * 
+java.util.Date to String conversion	java.text.DateFormat.format
+String to java.util.Date conversion	java.text.DateFormat.parse
+String to java.time.LocalDate conversion	java.time.LocalDate.parse(stringDate, java.time.format.DateTimeFormatter.ofPattern(input-date-format))
+MM	Month in Number format
+MMM	Month in English in short form
+MMMM	Month in English in full form
+dd	Date in 2 digits
+d	Date in single digit
+E (or) EEE	Day in shot form
+EEEE	Day in full form
+yyyy	Four digit year
+HH	24 hours timeline
+hh	12 hours timeline
+mm	Minutes
+ss	Seconds
+a	AM/PM
+Z	Time Zone
+ *
+ */
 public class DatePractice {
 
 	// JDK8 Clock class
@@ -39,6 +66,7 @@ public class DatePractice {
 		System.out.println("localDate2 : " + localDate2);
 
 		// TODO - create LocalDate object with now(ZoneId)
+		LocalDate localDate3 = LocalDate.now(ZoneId.of("Aisa/Kolkata"));
 	}
 
 	@Test
@@ -47,8 +75,10 @@ public class DatePractice {
 		System.out.println("localTime : " + localTime);
 
 		// TODO - create LocalDate object with now(Clock)
-
+		Clock clock = Clock.systemUTC();
+		LocalTime localTime2 = LocalTime.now(clock);
 		// TODO - create LocalDate object with now(ZoneId)
+		LocalTime localTime3 = LocalTime.now(ZoneId.of("Aisa/Kolkata"));
 	}
 
 	@Test
@@ -213,5 +243,192 @@ public class DatePractice {
 		DateFormat toDateFormat3 = new SimpleDateFormat("yyyy/MM/dd");
 		String convertedDate3 = toDateFormat3.format(date);
 		System.out.println(convertedDate3);
+	}
+
+	@Test
+	public void convertStringToUtilDate() throws ParseException {
+		DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+		String inputDate1 = "25-Jan-2016";
+		Date convertedDate1 = dateFormat.parse(inputDate1);
+		System.out.println(convertedDate1);
+
+		// Thursday, July 10 2017 12:10:08 PM
+		String inputDate2 = "Thursday, July 10 2017 12:10:08 PM";
+		DateFormat dateFormat2 = new SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm:ss a");
+		Date convertedDate2 = dateFormat2.parse(inputDate2);
+		System.out.println(convertedDate2);
+
+	}
+
+	@Test
+	public void convertStringToLocalDate() {
+		// 10/07/2017
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate localDate1 = LocalDate.parse("10/07/2017", formatter1);
+		System.out.println(localDate1);
+
+		// Thu, Jul 20 2017
+		DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("E, MMM dd yyyy");
+		LocalDate localDate2 = LocalDate.parse("Thu, Jul 20 2017", formatter2);
+		System.out.println(localDate2);
+
+	}
+
+	@Test
+	public void convertStringToLocalDateTime() {
+		// Thursday, Jul 10 2017 12:10:08 PM
+		String date5 = "Thursday, Jul 20 2017 12:10:08 PM";
+		DateTimeFormatter formatter4 = DateTimeFormatter.ofPattern("EEEE, MMM d yyyy HH:mm:ss a");
+		LocalDateTime localDate5 = LocalDateTime.parse(date5, formatter4);
+		System.out.println(localDate5);
+	}
+
+	@Test
+	public void printDayFromDate() {
+		int year = 2017;
+		int month = 9;
+		int date = 11;
+		Calendar calender = Calendar.getInstance();
+		calender.set(year, month, date);
+		Date date1 = calender.getTime();
+		DateFormat dateFormat1 = new SimpleDateFormat("EEEE");
+		String dayName = dateFormat1.format(date1);
+		System.out.println(dayName);
+
+		DateFormat dateFormat2 = new SimpleDateFormat("E");
+		String dayName2 = dateFormat2.format(date1);
+		System.out.println(dayName2);
+
+		LocalDate localDate = LocalDate.of(2017, 11, 25);
+		String dayName3 = localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+		System.out.println(dayName3);
+	}
+
+	@Test
+	public void localDateTimeToTimeStamp() {
+		LocalDateTime localDateTime = LocalDateTime.now();
+		Timestamp timeStamp = Timestamp.from(localDateTime.toInstant(ZoneOffset.ofHours(0)));
+		System.out.println(timeStamp);
+	}
+
+	@Test
+	public void addMonthDayYearToUtilDate() {
+		Calendar calendar = Calendar.getInstance();
+
+		// Date date = new Date();
+		// calendar.setTime(date);
+
+		System.out.println(calendar.getTime());
+
+		calendar.add(Calendar.DAY_OF_MONTH, 10);
+		System.out.println(calendar.getTime());
+
+		calendar.add(Calendar.MONTH, -2);
+		System.out.println(calendar.getTime());
+
+		calendar.add(Calendar.YEAR, 10);
+		System.out.println(calendar.getTime());
+
+		calendar.add(Calendar.MONTH, -2);
+		System.out.println(calendar.getTime());
+
+		calendar.add(Calendar.YEAR, -10);
+		System.out.println(calendar.getTime());
+	}
+
+	@Test
+	public void checkDate() throws ParseException {
+		// method 1
+		String inputDate = "20180710";
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		Date date = dateFormat.parse(inputDate);
+
+		Instant instant = date.toInstant();
+		ZoneId zoneId = ZoneId.of("Asia/Kolkata");
+		LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+
+		LocalDate localDateToday = LocalDate.now();
+		boolean isPastDate = localDate.isBefore(localDateToday);
+		boolean isFutureDate = localDate.isAfter(localDateToday);
+		System.out.println(isPastDate);
+		System.out.println(isFutureDate);
+
+		// method 2
+		String inputDate2 = "20190814";
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate localDate2 = LocalDate.parse(inputDate2, dateTimeFormatter);
+		LocalDate today2 = LocalDate.now(Clock.systemDefaultZone());
+		boolean isPast2 = localDate2.isBefore(today2);
+		boolean isFuture2 = localDate2.isAfter(today2);
+		System.out.println("inputDate2: " + localDate2 + ", today2: " + today2 + ", isPast2: " + isPast2
+				+ ", isFuture: " + isFuture2);
+	}
+
+	@Test
+	public void validateUtilDate() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		dateFormat.setLenient(false);
+		String inputDate = "20170999";
+		Date date;
+		try {
+			date = dateFormat.parse(inputDate);
+			System.out.println(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	public void validateUsingLocalDate() {
+		// 20170999 - using java.time.LocalDate
+		try {
+			String date1 = "20170999";
+			DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyyMMdd");
+			LocalDate localDate1 = LocalDate.parse(date1, formatter1);
+			System.out.println("localDate1: " + localDate1);
+			System.out.println("formatter1.format(localDate1): " + formatter1.format(localDate1));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void lengthOfTheMonth() {
+
+	}
+
+	/**
+	 * year == 2017
+	 * month == 7
+	 * day == monday
+	 * 
+	 * Print date of all mondays in July-2017
+	 */
+	@Test
+	public void getDatesOfDayOfWeekOfMonth() {
+
+	}
+
+	@Test
+	public void convert12HoursDateTimeTo24Hours() throws ParseException {
+		// JDK 7
+		String date = "10-Aug-2017 07:56:12 PM";
+		System.out.println("String: inputDate: " + date);
+		SimpleDateFormat fromFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss a");
+		SimpleDateFormat toFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+
+		Date inputDate = fromFormat.parse(date);
+		System.out.println("Date: inputDate: " + inputDate);
+
+		String outputDate = toFormat.format(inputDate);
+		System.out.println("JDK7: outputDate: " + outputDate);
+
+		// Java 8
+		String outputDate2 = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm:ss a"))
+				.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss"));
+		System.out.println("JDK8: outputDate: " + outputDate2);
+
 	}
 }
