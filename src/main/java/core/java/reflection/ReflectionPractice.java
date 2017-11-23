@@ -33,6 +33,9 @@ public class ReflectionPractice {
 	public void classObject3() {
 		ReflectionModel1 reflectionModel1 = new ReflectionModel1();
 		Class<?> klass = reflectionModel1.getClass();
+		// To get package
+		Package package1 = klass.getPackage();
+		System.out.println(package1);
 		System.out.println(klass);
 	}
 
